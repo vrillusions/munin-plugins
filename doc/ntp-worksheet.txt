@@ -1,0 +1,27 @@
+HOW TO GET INFORMATION USED FOR NTP PLUGINS
+
+Keep in mind that you shouldn't use awk from within a perl script.  Use awk if it can
+be done in a shell script
+
+TO GET TIME OFFSET:
+  ntpq -c rv | awk 'BEGIN{FS=", "}; /offset/{print $3}'
+  RETURNS: "offset=0.087"
+
+  ntpq -c rv | awk 'BEGIN{FS=", "}; /offset/{print $3}' | awk 'BEGIN{FS="="};{print $2}'
+  RETURNS: "0.087"
+
+TO GET NUMBER OF ESTIMATED ACTIVE USERS:
+  /usr/local/sbin/ntp_pool_dns | awk '{print $3}'
+  RETURNS: "237"
+
+TO GET NUMBER OF ABUSIVE USERS:
+  /usr/local/sbin/ntp_pool_dns | awk '{print $4}'
+  RETURNS: "5"
+
+TO GET NUMBER OF PACKETS RECEIVED:
+  ntpdc -c iostats | awk '/received packets/{ print $NF}'
+  RETURNS: "11441"
+
+TO GET NUMBER OF PACKETS SENT
+  ntpdc -c iostats | awk '/packets sent/{ print $NF}'
+  RETURNS: "15070"
