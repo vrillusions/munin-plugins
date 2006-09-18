@@ -1,0 +1,61 @@
+#!/usr/bin/perl -w
+#
+# Plugin to monitor NTP clients
+# Requires ntp managements sripts located at http://www.schlitt.net/scripts/ntp/index.html
+#
+# Parameters understood:
+#
+# 	config   (required)
+#
+# $Id$
+#
+# Magic markers - optional - used by installation scripts and
+# munin-node-configure:
+#
+#%# family=manual
+#%# capabilities=
+#
+
+use strict;
+use Net::hostent;
+use Socket;
+
+# for when I get autoconf setup again
+if ($ARGV[0] and $ARGV[0] eq "autoconf") {
+	`ntpq -c help >/dev/null 2>/dev/null`;
+	if ($? eq "0") {
+		if (`ntpq -c "hostnames no" -c peers | wc -l` > 0) {
+			print "yes\n";
+			exit 0;
+		} else {
+			print "no (unable to list peers)\n";
+			exit 1;
+		}
+	} else {
+		print "no (ntpq not found)\n";
+		exit 1;
+	}
+}
+
+my $ntp_pool_dns = "/usr/local/sbin/ntp_pool_dns";
+
+if ($ARGV[0] and $ARGV[0] eq "config") {
+	print "graph_title NTP active clients\n";
+	print "graph_args --base 1000 --vertical-label clients --lower-limit 0\n";
+	print "active.label Active clients\n";
+	print "active.draw LINE2\n";
+	print "abusive.label Abusive clients\n";
+	print "abusive.draw LINE2\n";
+        exit 0;
+}
+
+my @lines = `$ntp_pool_dns`;
+foreach (@lines) {
+        my @F = split;
+	print "active.value $F[2]\n";
+	print "abusive.value $F[3]\n";
+}
+
+exit 0;
+
+# vim:syntax=perl
