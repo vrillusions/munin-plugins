@@ -43,7 +43,7 @@ if ($ARGV[0] and $ARGV[0] eq "config") {
 	print "graph_title NTP active clients\n";
 	print "graph_args --base 1000 --vertical-label clients --lower-limit 0\n";
 	print "active.label Active clients\n";
-	print "active.draw LINE2\n";
+	print "active.draw AREA\n";
 	print "abusive.label Abusive clients\n";
 	print "abusive.draw LINE2\n";
         exit 0;
