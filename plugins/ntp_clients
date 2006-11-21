@@ -3,6 +3,15 @@
 # Plugin to monitor NTP clients
 # Requires ntp managements sripts located at http://www.schlitt.net/scripts/ntp/index.html
 #
+# The default timeout value for munin may be too short on slower
+# machines,  You can tell if this is the case if you occasionally
+# see spots in the graph without any data showing (just a gap)
+# To correct this, edit /etc/munin/plugin-conf.d/munin-node
+# and add the following to make the timeout 30 seconds
+#
+#   [ntp_clients]
+#   timeout 30
+#
 # Parameters understood:
 #
 # 	config   (required)
