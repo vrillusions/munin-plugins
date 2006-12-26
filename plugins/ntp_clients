@@ -15,6 +15,7 @@
 # Parameters understood:
 #
 # 	config   (required)
+#	autoconf
 #
 # $Id$
 #
@@ -22,31 +23,26 @@
 # munin-node-configure:
 #
 #%# family=manual
-#%# capabilities=
+#%# capabilities=autoconf
 #
 
 use strict;
 use Net::hostent;
 use Socket;
 
-# for when I get autoconf setup again
+my $ntp_pool_dns = "/usr/local/sbin/ntp_pool_dns";
+
+# autoconf - see if this test will work
 if ($ARGV[0] and $ARGV[0] eq "autoconf") {
-	`ntpq -c help >/dev/null 2>/dev/null`;
+	`$ntp_pool_dns`;
 	if ($? eq "0") {
-		if (`ntpq -c "hostnames no" -c peers | wc -l` > 0) {
-			print "yes\n";
-			exit 0;
-		} else {
-			print "no (unable to list peers)\n";
-			exit 1;
-		}
+		print "yes\n";
+		exit 0;
 	} else {
-		print "no (ntpq not found)\n";
+		print "no (ntp_pool_dns not found)\n";
 		exit 1;
 	}
 }
-
-my $ntp_pool_dns = "/usr/local/sbin/ntp_pool_dns";
 
 if ($ARGV[0] and $ARGV[0] eq "config") {
 	print "graph_title NTP active clients\n";
