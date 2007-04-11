@@ -1,0 +1,79 @@
+#!/usr/bin/perl -w
+#
+# Plugin to monitor ntp packet traffic 
+#
+# Parameters understood:
+#
+# 	config   (required)
+#	autoconf
+#
+# $Id$
+#
+# Magic markers - optional - used by installation scripts and
+# munin-node-configure:
+#
+#%# family=manual
+#%# capabilities=autoconf
+#
+
+use strict;
+use Net::hostent;
+use Socket;
+
+# set to absolute path if needed
+my $ntpdc = "ntpdc -c iostats";
+
+# autoconf - see if this test will work
+if ($ARGV[0] and $ARGV[0] eq "autoconf") {
+	`$ntpdc`;
+	if ($? eq "0") {
+		print "yes\n";
+		exit 0;
+	} else {
+		print "no (ntpdc not found)\n";
+		exit 1;
+	}
+}
+
+if ($ARGV[0] and $ARGV[0] eq "config") {
+	print "graph_title NTP packet traffic\n";
+	print "graph_args --base 1000 --lower-limit 0\n";
+	print 'graph_vlabel packets per ${graph_period}'."\n";
+	print "received.label Received\n";
+	print "received.draw AREA\n";
+	print "received.type DERIVE\n";
+	print "sent.label Sent\n";
+	print "sent.draw LINE2\n";
+	print "sent.type DERIVE\n";
+        exit 0;
+}
+
+#declare vars and subroutines
+my $received = 0;
+my $sent = 0;
+sub trim($);
+
+# Perl trim function to remove whitespace from the start and end of the string
+sub trim($) {
+	my $string = shift;
+	$string =~ s/^\s+//;
+	$string =~ s/\s+$//;
+	return $string;
+}
+
+my @lines = `$ntpdc`;
+foreach my $line (@lines) {
+	# output is fixed width with data starting after position 22
+	if ((rindex $line,"received packets:") == 0) {
+	       $received = trim(substr($line, 22));
+	}
+	if ((rindex $line,"packets sent:") == 0) {
+	       $sent = trim(substr($line, 22));
+	}
+}
+print "received.value $received\n";
+print "sent.value $sent\n";
+
+exit 0;
+
+# vim:syntax=perl
