@@ -42,9 +42,11 @@ if ($ARGV[0] and $ARGV[0] eq "config") {
 	print "received.label Received\n";
 	print "received.draw AREA\n";
 	print "received.type DERIVE\n";
+	print "received.min 0\n";
 	print "sent.label Sent\n";
 	print "sent.draw LINE2\n";
 	print "sent.type DERIVE\n";
+	print "sent.min 0\n";
         exit 0;
 }
 
