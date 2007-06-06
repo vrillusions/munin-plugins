@@ -44,6 +44,9 @@ if ($ARGV[0] and $ARGV[0] eq "config") {
 	print "graph_scale no\n";
 	print "offset.label Offset\n";
 	print "offset.draw LINE2\n";
+	print "hourly_trend.label Hourly Trend\n";
+	print "hourly_trend.draw LINE1\n";
+	print "hourly_trend.cdef offset,3600,TREND\n";
         exit 0;
 }
 
