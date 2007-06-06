@@ -40,7 +40,7 @@ if ($ARGV[0] and $ARGV[0] eq "autoconf") {
 
 if ($ARGV[0] and $ARGV[0] eq "config") {
 	print "graph_title NTP time offset\n";
-	print "graph_args --base 1000 --vertical-label msec\n";
+	print "graph_args --base 1000 --vertical-label msec --upper-limit 1 --lower-limit -1\n";
 	print "graph_scale no\n";
 	print "offset.label Offset\n";
 	print "offset.draw LINE2\n";
